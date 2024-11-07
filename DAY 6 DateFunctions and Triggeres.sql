@@ -104,3 +104,47 @@ end
 Select * from std
 
 exec sp_UpdateStd 8,'Maalav','Gandhi','Jamnagar'
+
+
+------------------------------------Hiren---------------------------------
+
+USE Student
+
+CREATE TABLE Std (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    FirstName VARCHAR(50),
+    LastName VARCHAR(50),
+    Location VARCHAR(50)
+);
+
+CREATE TABLE InsertLog (
+    Id INT PRIMARY KEY IDENTITY(1,1),
+    Descp VARCHAR(MAX)
+);
+
+CREATE PROCEDURE sp_InsertStd
+    @FirstName VARCHAR(50),
+    @LastName VARCHAR(50),
+    @Location VARCHAR(50)
+AS
+BEGIN
+    INSERT INTO Std (FirstName, LastName, Location)
+    VALUES (@FirstName, @LastName, @Location);
+END;
+
+CREATE TRIGGER trgStdInsert
+ON Std
+AFTER INSERT 
+AS
+BEGIN
+    DECLARE @CurrentTime VARCHAR(MAX);
+    SET @CurrentTime = CONVERT(VARCHAR(MAX), GETDATE());
+
+    INSERT INTO InsertLog (Descp)
+    VALUES ('A record was inserted on ' + @CurrentTime);
+END;
+
+EXEC sp_InsertStd 'Parmar', 'Hiren', 'Galsana';
+
+SELECT * FROM Std;
+SELECT * FROM InsertLog;
